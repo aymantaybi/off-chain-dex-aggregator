@@ -3,6 +3,14 @@ name = "off-chain-dex-aggregator"
 version = "0.1.0"
 edition = "2021"
 
+[profile.release]
+opt-level = 3
+lto = true
+debug = "line-tables-only"
+strip = true
+panic = "abort"
+codegen-units = 1
+
 [dependencies]
 alloy = { version = "0.7.3", features = ["full", "node-bindings", "rpc-types-debug", "rpc-types-trace", "json-rpc", "rpc-client", "signer-aws", "signer-keystore", "signer-ledger", "signer-mnemonic", "signer-trezor", "signer-yubihsm", "rlp", "transports"] }
 
@@ -10,6 +18,7 @@ revm = { version = "19.4.0", features = ["alloydb", "dev"] }
 revm-inspectors = "0.15.0"
 revm-contract = { git = "https://github.com/aymantaybi/revm-contract" }
 revm-contract-types = { git = "https://github.com/aymantaybi/revm-contract-types" }
+revm-proxy-db = { git = "https://github.com/aymantaybi/revm-proxy-db" }
 
 eyre = "0.6.12"
 

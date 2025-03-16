@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Instant};
 
 use alloy::{
     eips::BlockId,
@@ -9,14 +9,17 @@ use alloy::{
     sol_types::{SolCall, SolValue},
 };
 use revm::{
-    db::{AlloyDB, CacheDB},
+    db::{AlloyDB, CacheDB, EmptyDB},
     primitives::{address, Account, Address, HashMap, ResultAndState, TxKind, U256},
     Database, DatabaseRef, Evm,
 };
 
 use off_chain_dex_aggregator::adapters::SwapMode;
 use off_chain_dex_aggregator::{adapters::path::PathAdapter, Aggregator};
+use tokio::sync::mpsc;
 use tracing::info;
+
+use revm_proxy_db::{load_cache_db_from_file, save_cache_db_to_file, NewFetch, ProxyDB};
 
 sol!(
     #[allow(missing_docs)]
@@ -95,7 +98,13 @@ async fn main() -> eyre::Result<()> {
     info!("Provider connected!");
 
     let alloy_db = AlloyDB::new(provider.clone(), BlockId::default()).unwrap();
-    let cache_db = CacheDB::new(alloy_db);
+    let mut proxy_db = ProxyDB::new(alloy_db);
+    let (sender, mut receiver) = mpsc::unbounded_channel();
+    proxy_db.sender = sender.into();
+    let cache_db = CacheDB::new(proxy_db);
+
+    //let cache_db = load_cache_db_from_file::<EmptyDB>("data/db.json".to_string())?;
+
     let evm = Evm::builder()
         .with_db(cache_db)
         .modify_cfg_env(|cfg| {
@@ -116,7 +125,33 @@ async fn main() -> eyre::Result<()> {
 
     let amount = U256::from(1e6);
 
-    aggregator.quote(amount, SwapMode::In, 10);
+    let instant = Instant::now();
+
+    let quote = aggregator.quote(amount, SwapMode::In, 10);
+
+    dbg!(instant.elapsed().as_micros());
+
+    let mut db = CacheDB::new(EmptyDB::new());
+
+    while let Some(fetch) = receiver.recv().await {
+        match fetch {
+            NewFetch::Basic {
+                address,
+                account_info,
+            } => {
+                db.insert_account_info(address, account_info);
+            }
+            NewFetch::Storage {
+                address,
+                index,
+                value,
+            } => {
+                db.insert_account_storage(address, index, value).unwrap();
+            }
+        }
+    }
+
+    let _ = save_cache_db_to_file("data/db.json".to_string(), &db);
 
     Ok(())
 }
