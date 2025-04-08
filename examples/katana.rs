@@ -27,7 +27,7 @@ sol!(
     #[sol(rpc)]
     #[derive(Debug)]
     ERC20,
-    "examples/abi/ERC20.json"
+    "src/abi/ERC20.json"
 );
 
 sol!(
@@ -35,7 +35,7 @@ sol!(
     #[sol(rpc)]
     #[derive(Debug)]
     AggregateRouter,
-    "examples/abi/AggregateRouter.json"
+    "src/abi/AggregateRouter.json"
 );
 
 static AGGREGATE_ROUTER_ADDRESS: Address = address!("5f0acdd3ec767514ff1bf7e79949640bf94576bd");
@@ -149,7 +149,7 @@ impl PathAdapter for SwapPath {
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
-    let ipc = IpcConnect::new("/mnt/blockstorage/node/geth.ipc".to_string());
+    let ipc = IpcConnect::new("/mnt/combined_volume/ronin/chaindata/data/geth.ipc".to_string());
     let provider = ProviderBuilder::new()
         .network::<AnyNetwork>()
         .on_ipc(ipc)
@@ -195,15 +195,6 @@ async fn main() -> eyre::Result<()> {
 
     let amount = U256::from(100e6);
 
-    let accounts = aggregator.evm.db().accounts.clone();
-    let now = Instant::now();
-    let quote = aggregator.quote(amount, SwapMode::In, 10);
-
-    let sum: U256 = quote.into_iter().sum();
-
-    dbg!(sum, now.elapsed().as_micros());
-
-    aggregator.evm.db_mut().accounts = accounts;
     let now = Instant::now();
     let quote = aggregator.quote(amount, SwapMode::In, 10);
 
