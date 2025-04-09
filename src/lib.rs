@@ -6,6 +6,7 @@ use revm::{
 };
 
 pub mod adapters;
+pub mod helpers;
 
 pub struct Aggregator<'a, EXT, ExtDB: DatabaseRef, P: PathAdapter> {
     pub evm: Evm<'a, EXT, CacheDB<ExtDB>>,

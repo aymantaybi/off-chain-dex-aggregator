@@ -15,14 +15,20 @@ revm = { version = "19.4.0", features = ["alloydb", "dev"] }
 revm-inspectors = "0.15.0"
 revm-contract = { git = "https://github.com/aymantaybi/revm-contract" }
 revm-contract-types = { git = "https://github.com/aymantaybi/revm-contract-types" }
-revm-proxy-db = { git = "https://github.com/aymantaybi/revm-proxy-db" }
+#revm-proxy-db = { git = "https://github.com/aymantaybi/revm-proxy-db" }
+revm-proxy-db = { path = "/Users/aymantaybi/Documents/GitHub/revm-proxy-db" }
+
 
 eyre = "0.6.12"
 
-[dev-dependencies]
-tokio = { version = "1.43.0", features = ["full"] }
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+dotenvy = "0.15.7"
+
+
+[dev-dependencies]
+tokio = { version = "1.43.0", features = ["full"] }
+
 # benches
 criterion = { version = "0.5", features = ["html_reports"] }
 
