@@ -3,7 +3,7 @@ use std::sync::Arc;
 use alloy::{
     eips::BlockId,
     network::AnyNetwork,
-    providers::{IpcConnect, ProviderBuilder, RootProvider, WsConnect},
+    providers::{ProviderBuilder, RootProvider, WsConnect},
     pubsub::PubSubFrontend,
 };
 use revm::{
@@ -12,7 +12,6 @@ use revm::{
     Evm,
 };
 use revm_proxy_db::ProxyDB;
-use tracing::info;
 
 pub type AlloyProxyCacheDB = CacheDB<
     ProxyDB<AlloyDB<PubSubFrontend, AnyNetwork, Arc<RootProvider<PubSubFrontend, AnyNetwork>>>>,
