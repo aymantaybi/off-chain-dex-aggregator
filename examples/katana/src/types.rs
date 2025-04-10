@@ -2,28 +2,17 @@ use crate::AGGREGATE_ROUTER_ADDRESS;
 use crate::ERC20::Transfer;
 use crate::{helpers::encode_v3_path, AggregateRouter::execute_1Call};
 use alloy::{
-    eips::BlockId,
-    network::AnyNetwork,
-    primitives::{Bytes, Uint},
-    providers::{IpcConnect, Provider, ProviderBuilder},
-    sol,
+    primitives::Uint,
     sol_types::{SolCall, SolEvent, SolValue},
 };
-use dotenvy::dotenv;
 use revm::{
-    db::{AlloyDB, CacheDB, EmptyDB},
     primitives::{
-        address, Account, Address, ExecutionResult, HashMap, ResultAndState, TxKind, U256,
+        Account, Address, ExecutionResult, HashMap, ResultAndState, TxKind, U256,
     },
-    Database, DatabaseRef, Evm, InMemoryDB,
+    Database, DatabaseRef, Evm,
 };
-use revm_proxy_db::{load_snapshot_from_file, save_snapshot_to_file, NewFetch, Snapshot};
-use smart_order_router::{adapters::path::PathAdapter, helpers::build_provider, Aggregator};
-use smart_order_router::{adapters::SwapMode, helpers::build_evm};
-use std::{sync::Arc, time::Instant};
-use tokio::sync::mpsc;
-use tracing::{info, warn};
-use tracing_subscriber::{EnvFilter, FmtSubscriber};
+use smart_order_router::adapters::path::PathAdapter;
+use smart_order_router::adapters::SwapMode;
 
 pub struct PathUniswapV2Pool {
     pub address: Address,

@@ -1,29 +1,20 @@
 use alloy::{
-    eips::BlockId,
-    network::AnyNetwork,
-    primitives::{Bytes, Uint},
-    providers::{IpcConnect, Provider, ProviderBuilder},
-    sol,
-    sol_types::{SolCall, SolEvent, SolValue},
+    primitives::Uint,
+    providers::Provider,
+    sol_types::{SolCall, SolEvent},
 };
 use dotenvy::dotenv;
-use katana::{
-    helpers::encode_v3_path,
-    types::{PathUniswapV2Pool, PathUniswapV3Pool, SwapPath},
-    ERC20::Transfer,
-};
-use katana::{AggregateRouter::execute_1Call, AGGREGATE_ROUTER_ADDRESS};
+use katana::types::{PathUniswapV2Pool, PathUniswapV3Pool, SwapPath};
 use revm::{
-    db::{AlloyDB, CacheDB, EmptyDB},
+    db::CacheDB,
     primitives::{
-        address, Account, Address, ExecutionResult, HashMap, ResultAndState, TxKind, U256,
-    },
-    Database, DatabaseRef, Evm, InMemoryDB,
+        address, U256,
+    }, InMemoryDB,
 };
 use revm_proxy_db::{load_snapshot_from_file, save_snapshot_to_file, NewFetch, Snapshot};
-use smart_order_router::{adapters::path::PathAdapter, helpers::build_provider, Aggregator};
+use smart_order_router::{helpers::build_provider, Aggregator};
 use smart_order_router::{adapters::SwapMode, helpers::build_evm};
-use std::{sync::Arc, time::Instant};
+use std::time::Instant;
 use tokio::sync::mpsc;
 use tracing::{info, warn};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
