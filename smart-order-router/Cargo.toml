@@ -1,0 +1,23 @@
+[package]
+name = "smart-order-router"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+alloy.workspace = true
+revm.workspace = true
+revm-inspectors.workspace = true
+revm-contract.workspace = true
+revm-contract-types.workspace = true
+revm-proxy-db.workspace = true
+tokio.workspace = true
+eyre.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+
+[[bench]]
+name = "my_benchmark"
+harness = false

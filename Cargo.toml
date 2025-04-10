@@ -1,37 +1,25 @@
-[package]
-name = "off-chain-dex-aggregator"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+resolver = "2"
+members = ["examples/katana", "smart-order-router"]
 
 [profile.release]
 opt-level = 3
 lto = "fat"
 codegen-units = 1
 
-[dependencies]
+[workspace.dependencies]
+smart-order-router = { path = "smart-order-router" }
+# deps
 alloy = { version = "0.7.3", features = ["full", "node-bindings", "rpc-types-debug", "rpc-types-trace", "json-rpc", "rpc-client", "signer-aws", "signer-keystore", "signer-ledger", "signer-mnemonic", "signer-trezor", "signer-yubihsm", "rlp", "transports"] }
-
 revm = { version = "19.4.0", features = ["alloydb", "dev"] }
 revm-inspectors = "0.15.0"
 revm-contract = { git = "https://github.com/aymantaybi/revm-contract" }
 revm-contract-types = { git = "https://github.com/aymantaybi/revm-contract-types" }
 #revm-proxy-db = { git = "https://github.com/aymantaybi/revm-proxy-db" }
 revm-proxy-db = { path = "/Users/aymantaybi/Documents/GitHub/revm-proxy-db" }
-
-
+tokio = { version = "1.43.0", features = ["full"] }
 eyre = "0.6.12"
-
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 dotenvy = "0.15.7"
-
-
-[dev-dependencies]
-tokio = { version = "1.43.0", features = ["full"] }
-
-# benches
 criterion = { version = "0.5", features = ["html_reports"] }
-
-[[bench]]
-name = "my_benchmark"
-harness = false
