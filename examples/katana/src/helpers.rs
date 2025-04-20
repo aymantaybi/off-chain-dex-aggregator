@@ -1,10 +1,7 @@
-use crate::types::PathUniswapV3Pool;
-use alloy::{
-    primitives::Bytes,
-    sol_types::{SolCall, SolEvent},
-};
+use crate::types::PathKatanaV3Pool;
+use alloy::primitives::Bytes;
 
-pub fn encode_v3_path(pools: &Vec<PathUniswapV3Pool>) -> Bytes {
+pub fn encode_v3_path(pools: &Vec<PathKatanaV3Pool>) -> Bytes {
     let first_pool = pools.first().expect("Cannot encode empty pools path");
     let mut path = Vec::new();
     path.extend_from_slice(first_pool.token_in.as_slice());

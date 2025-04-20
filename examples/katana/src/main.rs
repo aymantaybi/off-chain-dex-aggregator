@@ -4,16 +4,14 @@ use alloy::{
     sol_types::{SolCall, SolEvent},
 };
 use dotenvy::dotenv;
-use katana::types::{PathUniswapV2Pool, PathUniswapV3Pool, SwapPath};
 use revm::{
     db::CacheDB,
-    primitives::{
-        address, U256,
-    }, InMemoryDB,
+    primitives::{address, U256},
+    InMemoryDB,
 };
 use revm_proxy_db::{load_snapshot_from_file, save_snapshot_to_file, NewFetch, Snapshot};
-use smart_order_router::{helpers::build_provider, Aggregator};
 use smart_order_router::{adapters::SwapMode, helpers::build_evm};
+use smart_order_router::{helpers::build_provider, Aggregator};
 use std::time::Instant;
 use tokio::sync::mpsc;
 use tracing::{info, warn};
@@ -21,7 +19,7 @@ use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
-    dotenv()?;
+    /* dotenv()?;
 
     let env_filter = EnvFilter::from_default_env();
     let subscriber = FmtSubscriber::builder()
@@ -138,6 +136,8 @@ async fn main() -> eyre::Result<()> {
     } else {
         warn!("No accounts to save");
     }
+
+    */
 
     Ok(())
 }

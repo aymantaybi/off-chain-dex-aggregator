@@ -42,35 +42,35 @@ where
         amount: U256,
         mode: SwapMode,
     ) -> (usize, U256, HashMap<Address, Account>) {
-        let mut best_path_index = 0;
-        let (mut best_amount, mut changes) =
-            self.paths[0].swap(&mut self.evm, amount, mode).unwrap();
-        for i in 0..self.paths.len() {
-            let (a, c) = self.paths[i].swap(&mut self.evm, amount, mode).unwrap();
+        let output = self.paths[0].swap(&mut self.evm, amount, mode).unwrap();
+        let mut best_index = 0;
+        let mut best_amount = output.amount;
+        let mut best_changes = output.state;
+        for index in 1..self.paths.len() {
+            let output = self.paths[index].swap(&mut self.evm, amount, mode).unwrap();
             match mode {
                 SwapMode::In => {
-                    if a > best_amount {
-                        best_amount = a;
-                        best_path_index = i;
-                        changes = c;
+                    if output.amount > best_amount {
+                        best_amount = output.amount;
+                        best_index = index;
+                        best_changes = output.state;
                     }
                 }
                 SwapMode::Out => {
-                    if a < best_amount {
-                        best_amount = a;
-                        best_path_index = i;
-                        changes = c;
+                    if output.amount < best_amount {
+                        best_amount = output.amount;
+                        best_index = index;
+                        best_changes = output.state;
                     }
                 }
             };
         }
-        (best_path_index, best_amount, changes)
+        (best_index, best_amount, best_changes)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    
 
     #[test]
     fn it_works() {}
